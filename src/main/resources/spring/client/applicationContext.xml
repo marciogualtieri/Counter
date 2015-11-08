@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+          http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.2.xsd
+          http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.2.xsd">
+
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:spring/configuration.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <int:gateway id="gateway"
+                 service-interface="com.synchronoss.counter.gateways.SimpleGateway"
+                 default-request-channel="requestInputChannel"/>
+
+    <int-ip:tcp-connection-factory id="tcpConnectionFactory"
+                                   type="client"
+                                   host="${host:${default.host}}"
+                                   port="${port:${default.port}}"
+                                   single-use="true"
+                                   so-timeout="${timeout.millisecs}"/>
+
+    <int:channel id="requestInputChannel"/>
+
+    <int-ip:tcp-outbound-gateway id="tcpOutboundGateway"
+                                 request-channel="requestInputChannel"
+                                 reply-channel="clientBytes2StringChannel"
+                                 connection-factory="tcpConnectionFactory"
+                                 request-timeout="${timeout.millisecs}"
+                                 reply-timeout="${timeout.millisecs}"/>
+
+    <int:object-to-string-transformer id="clientBytes2String"
+                                      input-channel="clientBytes2StringChannel"/>
+
+</beans>

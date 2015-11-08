@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+          http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.2.xsd
+          http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.2.xsd">
+
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:spring/configuration.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <int-ip:tcp-connection-factory id="tcpConnectionFactory"
+                                   type="server"
+                                   port="${port:${default.port}}"/>
+
+    <int-ip:tcp-inbound-gateway id="tcpInboundGateway"
+                                connection-factory="tcpConnectionFactory"
+                                request-channel="serverBytes2StringChannel"
+                                error-channel="errorChannel"/>
+
+    <int:channel id="serviceActivatorInputChannel"/>
+
+    <bean id="counterService"
+          class="com.synchronoss.counter.services.CounterService">
+        <constructor-arg value="${serialized.counter.file}"/>
+    </bean>
+
+    <int:service-activator input-channel="serviceActivatorInputChannel"
+                           ref="counterService"
+                           method="serve"/>
+
+    <int:object-to-string-transformer id="serverBytes2String"
+                                      input-channel="serverBytes2StringChannel"
+                                      output-channel="serviceActivatorInputChannel"/>
+
+    <int:transformer id="errorHandler"
+                     input-channel="errorChannel"
+                     expression="payload.failedMessage.payload + ':' + payload.cause.message"/>
+
+</beans>
