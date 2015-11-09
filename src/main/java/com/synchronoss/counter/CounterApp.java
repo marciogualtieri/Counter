@@ -27,11 +27,10 @@ public class CounterApp {
         CommandLinePropertySource commandLinePropertySource =
                 parsesInputArgsIntoCommandLinePropertySource(args);
         Mode mode = getModeFromCommandLinePropertySource(commandLinePropertySource);
-        CounterApp counterApp = new CounterApp();
         if (mode.equals(Mode.C)) {
-            counterApp.createConfigureAndRunClient(commandLinePropertySource);
+            createConfigureAndRunClient(commandLinePropertySource);
         } else {
-            counterApp.createConfigureAndRunServer(commandLinePropertySource);
+            createConfigureAndRunServer(commandLinePropertySource);
         }
     }
 
