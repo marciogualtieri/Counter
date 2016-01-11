@@ -16,8 +16,7 @@
 * Java 8 is required due to the use of method references.
 * Unit tests might take a few seconds or so to complete, as one hundred increments are performed by a thread pool of 25 clients against the server to check against concurrency issues.
 * After the project is built, JavaDocs will be available in the following location:
-
-  ./target/apidocs/index.html
+   <code>./target/apidocs/index.html</code>
 
 ### <a name="execute-the-jar-in-the-command-line"></a> EXECUTE THE JAR IN THE COMMAND LINE
 
@@ -47,10 +46,12 @@ properties file:
 #### <a name="examples"></a> Examples
 
 Start Server using the default port:
-$ java -jar ./target/counter-1.0-SNAPSHOT-jar-with-dependencies.jar --mode=S
+
+    $ java -jar ./target/counter-1.0-SNAPSHOT-jar-with-dependencies.jar --mode=S
 
 Run Client using the default port and host to evaluate counter:
-$ java -jar ./target/counter-1.0-SNAPSHOT-jar-with-dependencies.jar --mode=C --operation=E
+
+    $ java -jar ./target/counter-1.0-SNAPSHOT-jar-with-dependencies.jar --mode=C --operation=E
 
 ### <a name="on-the-design-choices"></a> ON THE DESIGN CHOICES
 
@@ -61,10 +62,9 @@ therefore, as I feel like reinventing  the wheel is always a bad idea, this appl
 [Spring Integration IP](http://docs.spring.io/spring-integration/reference/html/ip.html) provides  out-of-the-box implementations for both TCP server and client through
 bean configuration. The application uses the following application context files:
 
-* Server:
-    ./src/main/resources/spring/server/applicationContext.xml
-* Client:
-    ./src/main/resources/spring/client/applicationContext.xml
+* Server: <code>./src/main/resources/spring/server/applicationContext.xml</code>
+
+* Client: <code>./src/main/resources/spring/client/applicationContext.xml</code>
 
 For the server  side, Spring provides a  connection factory,  channel  and serializer/deserializer  beans
 as well. For the client side, Spring additionally provides a gateway bean to route messages.
